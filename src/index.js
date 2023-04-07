@@ -16,8 +16,7 @@ app.post('/sign-up', (req, res) => {
 })
 
 app.post('/tweets', (req, res) => {
-  //const user = users.find(i => i.username === newUsers)
-  if (newUsers.username !== req.body.username) {
+  if (!newUsers.username) {
     res.send('UNAUTHORIZED')
     return
   }
