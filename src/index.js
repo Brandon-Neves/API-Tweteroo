@@ -12,12 +12,12 @@ let newUsers
 app.post('/sign-up', (req, res) => {
   newUsers = req.body
   users.push(newUsers)
-  res.send('OK')
+  res.status(201).send('OK')
 })
 
 app.post('/tweets', (req, res) => {
   if (!newUsers.username) {
-    return res.sendStatus(400)
+    return res.status(401).send('UNAUTHORIZED')
   }
   const newTweets = req.body
   const user = {
@@ -26,7 +26,7 @@ app.post('/tweets', (req, res) => {
     tweet: newTweets.tweet
   }
   tweets.push(user)
-  res.send('OK')
+  res.status(201).send('OK')
 })
 
 app.get('/tweets', (req, res) => {
