@@ -17,8 +17,7 @@ app.post('/sign-up', (req, res) => {
 
 app.post('/tweets', (req, res) => {
   if (!newUsers.username) {
-    res.sendStatus(401)
-    return
+    return res.sendStatus(400)
   }
   const newTweets = req.body
   const user = {
