@@ -7,28 +7,32 @@ app.use(express.json())
 
 const users = []
 const tweets = []
-let newUsers
+const avatar = []
 
 app.post('/sign-up', (req, res) => {
-  newUsers = req.body
-  if (!newUsers.username || !newUsers.avatar) {
+  const newUsername = req.body.username
+  const newAvatar = req.body.avatar
+
+  if (!newUsername || !newAvatar) {
     return res.status(400).send('Todos os campos são obrigatórios!')
   }
-  users.push(newUsers)
+  users.push({ username: newUsername, avatar: newAvatar })
   res.status(201).send('OK')
 })
 
 app.post('/tweets', (req, res) => {
-  if (!newUsers.username) {
+  const username = req.body.username
+  const tweet = req.body.tweet
+  if (!username) {
     return res.status(401).send('UNAUTHORIZED')
   }
-  const newTweets = req.body
-  const user = {
-    username: newUsers.username,
-    avatar: newUsers.avatar,
-    tweet: newTweets.tweet
-  }
-  tweets.push(user)
+  const userIsExist = users.filter(user => user.username === username)
+  const [newUser] = userIsExist
+
+  const newAvatar = newUser.avatar
+
+  tweets.push({ username, tweet })
+  avatar.push({ username, avatar: newAvatar, tweet })
   res.status(201).send('OK')
 })
 
@@ -37,7 +41,7 @@ app.get('/tweets', (req, res) => {
     res.send([])
     return
   }
-  res.send(tweets.slice(-10).reverse())
+  res.send(avatar.slice(-10).reverse())
 })
 
 app.get('/sign-up', (req, res) => {
