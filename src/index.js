@@ -11,16 +11,15 @@ let newUsers
 
 app.post('/sign-up', (req, res) => {
   newUsers = req.body
+  if (!newUsers.username || !newUsers.avatar) {
+    return res.status(400).send('Todos os campos são obrigatórios!')
+  }
   users.push(newUsers)
   res.status(201).send('OK')
 })
 
 app.post('/tweets', (req, res) => {
-  if (
-    !newUsers.username ||
-    newUsers.username === null ||
-    newUsers.username === undefined
-  ) {
+  if (!newUsers.username) {
     return res.status(401).send('UNAUTHORIZED')
   }
   const newTweets = req.body
