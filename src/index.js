@@ -7,7 +7,6 @@ app.use(express.json())
 
 const users = []
 const tweets = []
-const avatar = []
 
 app.post('/sign-up', (req, res) => {
   const newUsername = req.body.username
@@ -23,25 +22,25 @@ app.post('/sign-up', (req, res) => {
 app.post('/tweets', (req, res) => {
   const username = req.body.username
   const tweet = req.body.tweet
-  if (!username) {
-    return res.status(401).send('UNAUTHORIZED')
+  if (!username || username === ' ' || !tweet || tweet === '') {
+    res.status(401).send('UNAUTHORIZED')
+    return
   }
-  const userIsExist = users.filter(user => user.username === username)
-  const [newUser] = userIsExist
-
-  const newAvatar = newUser.avatar
 
   tweets.push({ username, tweet })
-  avatar.push({ username, avatar: newAvatar, tweet })
   res.status(201).send('OK')
 })
 
 app.get('/tweets', (req, res) => {
-  if (!tweets) {
+  const loggedUser = tweets.map(tweet => {
+    const user = users.find(item => item.username === tweet.username)
+    return { username: user.username, avatar: user.avatar, tweet: tweet.tweet }
+  })
+  if (!loggedUser) {
     res.send([])
     return
   }
-  res.send(avatar.slice(-10).reverse())
+  res.send(loggedUser.slice(-10).reverse())
 })
 
 app.get('/sign-up', (req, res) => {
